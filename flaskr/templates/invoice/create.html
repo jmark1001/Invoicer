@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}New Post{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <label for="title">Sifra</label>
+    <input name="product_code" id="product_code" value="{{ request.form['product_code'] }}" required>
+    <label for="title">Kolicina</label>
+    <input name="quantity" id="quantity" value="{{ request.form['quantity'] }}" required>
+    <input type="submit" value="Unesi">
+  </form>
+{% endblock %}
