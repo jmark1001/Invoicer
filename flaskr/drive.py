@@ -2,9 +2,8 @@ import functools
 import pandas as pd
 
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, flash, g, redirect, render_template, request, url_for
 )
-from werkzeug.security import check_password_hash, generate_password_hash
 
 from flaskr.db import get_db
 
@@ -30,8 +29,12 @@ def codes():
         db = get_db()
         for index, row in df.iterrows():
             db.execute('INSERT INTO product (code, name, price)'
-                       ' VALUES (?, ?, ?)',
+                       ' VALUES (?, ?, ?)'
+                       'ON CONFLICT(code) DO UPDATE SET'
+                       ' name=excluded.name,'
+                       ' price=excluded.price',
                        (row['sifra'], row['naziv'], row['cena'])
+
                        )
             db.commit()
         flash("Sifre uspesno ucitane")
