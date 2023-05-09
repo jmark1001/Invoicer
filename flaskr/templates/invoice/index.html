@@ -8,18 +8,32 @@
 {% endblock %}
 
 {% block content %}
-  {% for invoice in invoices %}
     <article class="post">
       <header>
         <div>
-          <h1>{{ invoice['code'] }} {{ invoice['name'] }}</h1>
-            <h1>{{ invoice['price'] }} {{ invoice['quantity'] }}: <b>{{ invoice['price'] * invoice['quantity'] }}</b></h1>
+          <table>
+              <thead>
+                <tr>
+                  <th>Sifra</th>
+                  <th>Proizvod</th>
+                  <th>Cena</th>
+                  <th>Kolicina</th>
+                  <th>Ukupno</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in invoices %}
+                <tr>
+                  <td>{{ item['code'] }}</td>
+                  <td>{{ item['name'] }}</td>
+                  <td>{{ item['price'] }}</td>
+                  <td>{{ item['quantity'] }}</td>
+                  <td>{{ item['price'] * item['quantity'] }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+          </table>
         </div>
       </header>
-      <p class="body">{{ invoice['body'] }}</p>
     </article>
-    {% if not loop.last %}
-      <hr>
-    {% endif %}
-  {% endfor %}
 {% endblock %}

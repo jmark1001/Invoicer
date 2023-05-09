@@ -7,7 +7,7 @@ from flask import (
 
 from flaskr.db import get_db
 
-bp = Blueprint('drive', __name__, url_prefix='/drive')
+bp = Blueprint('codes', __name__, url_prefix='/codes')
 
 
 def login_required(view):
@@ -21,8 +21,9 @@ def login_required(view):
     return wrapped_view
 
 
-@bp.route('/codes', methods=['GET', 'POST'])
-def codes():
+@bp.route('/codes_import', methods=['GET', 'POST'])
+@login_required
+def codes_import():
     if request.method == 'POST':
         file = request.files['file']
         df = pd.read_csv(file)
@@ -43,19 +44,9 @@ def codes():
     return redirect(url_for('index'))
 
 
-@bp.route('/transactions', methods=['GET', 'POST'])
-def transactions():
-    if request.method == 'POST':
-        file = request.files['file']
-        df = pd.read_csv(file)
-        db = get_db()
-        for index, row in df.iterrows():
-            db.execute('INSERT INTO invoice (product_code, quantity)'
-                       ' VALUES (?, ?)',
-                       (row['sifra'], row['kolicina'])
-                       )
-            db.commit()
-        flash("Podaci o transakcijama uspesno ucitani")
-    elif request.method == 'GET':
-        return render_template('data/import_data.html')
+@bp.route('/codes_export', methods=['GET'])
+@login_required
+def codes_export():
+    if request.method == 'GET':
+        flash("hejjj export")
     return redirect(url_for('index'))

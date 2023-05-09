@@ -27,16 +27,11 @@ def create_app(test_config=None):
     from . import db
     db.init_app(app)
 
-    from . import auth, invoice, drive
+    from . import auth, invoice, codes
     app.register_blueprint(auth.bp)
     app.register_blueprint(invoice.bp)
-    app.register_blueprint(drive.bp)
+    app.register_blueprint(codes.bp)
 
     app.add_url_rule('/', endpoint='index')
-
-    # a simple page that says hello
-    @app.route('/')
-    def progress():
-        return 'In progress!'
 
     return app

@@ -1,17 +1,105 @@
 <!doctype html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.navbar {
+  overflow: hidden;
+  background-color: #377ba8;
+}
+
+.navbar a {
+  float: left;
+  font-size: 16px;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.dropdown {
+  float: left;
+  overflow: hidden;
+}
+
+.dropdown .dropbtn {
+  font-size: 16px;
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 16px;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+}
+
+.navbar a:hover, .dropdown:hover .dropbtn {
+  background-color: dodgerblue;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  float: none;
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+</style>
 <title>{% block title %}{% endblock %} - Flaskr</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-<nav>
-  <h1>Pnit M</h1>
+<nav class="navbar">
+  <h1 style="color:white;">Pnit M</h1>
   <ul>
     {% if g.user %}
-      <li><span>{{ g.user['username'] }}</span>
-        <li><a href="{{ url_for('drive.transactions') }}">Povuci transakcije</a></li>
-        <li><a href="{{ url_for('drive.codes') }}">Azuriraj sifre</a></li>
+{#        <li><span>{{ g.user['username'] }}</span></li>#}
+        <li>
+          <div class="dropdown">
+            <button class="dropbtn">Transakcije
+              <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content">
+              <a href="{{ url_for('invoice.index') }}">Pregled</a>
+              <a href="{{ url_for('invoice.invoice_import') }}">Ucitaj</a>
+              <a href="{{ url_for('invoice.invoice_export') }}">Izvezi</a>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="dropdown">
+            <button class="dropbtn">Sifre
+              <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content">
+              <a href="#">Pregled</a>
+              <a href="{{ url_for('codes.codes_import') }}">Ucitaj</a>
+              <a href="{{ url_for('codes.codes_export') }}">Izvezi</a>
+            </div>
+          </div>
+        </li>
       <li><a href="{{ url_for('auth.logout') }}">Izloguj se</a>
     {% else %}
       <li><a href="{{ url_for('auth.register') }}">Register</a>
-      <li><a href="{{ url_for('auth.login') }}">Uloguj se</a>
     {% endif %}
   </ul>
 </nav>
