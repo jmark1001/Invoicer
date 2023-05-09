@@ -1,13 +1,13 @@
 import pandas as pd
 from flask import (
-    Blueprint, flash, redirect, render_template, request, url_for, g
+    Blueprint, flash, redirect, render_template, request, url_for, Response
 )
 from flaskr.auth import login_required
 from flaskr.db import get_db
 
 ERROR_INVOICE_NOT_NUM = "Obe vrednosti moraju biti broj"
 ERROR_INVOICE_REQUIRED = "Oba polja su obavezna"
-ERROR_INVOICE_CODE_NOT_EXISTS = "Sifra nije u bazi"
+ERROR_INVOICE_CODE_NOT_EXISTS = "Sifra proizvoda nije u bazi"
 
 bp = Blueprint('invoice', __name__)
 
@@ -94,5 +94,15 @@ def invoice_import():
 @login_required
 def invoice_export():
     if request.method == 'GET':
-        flash("hejjj export")
+        filename = "transakcije.csv"
+        db = get_db()
+        query = '''SELECT p.code, p.name, p.price, i.quantity'
+                ' FROM product p JOIN invoice i ON p.code=i.product_code'''
+        df = pd.read_sql_query(query, db)
+        df.to_csv(filename, index=False)
+        return Response(
+            open(filename, 'r'),
+            mimetype='text/csv',
+            headers={'Content-Disposition': f'attachment;filename={filename}'}
+        )
     return redirect(url_for('index'))

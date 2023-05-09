@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Proizvodi{% endblock %}</h1>
+{#  {% if g.user %}#}
+{#    <a class="action" href="{{ url_for('invoice.create') }}">Novo</a>#}
+{#  {% endif %}#}
+{% endblock %}
+
+{% block content %}
+    <article class="post">
+      <header>
+        <div>
+          <table>
+              <thead>
+                <tr>
+                  <th>Sifra</th>
+                  <th>Proizvod</th>
+                  <th>Cena</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in products %}
+                <tr>
+                  <td>{{ item['code'] }}</td>
+                  <td>{{ item['name'] }}</td>
+                  <td>{{ item['price'] }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+          </table>
+        </div>
+      </header>
+    </article>
+{% endblock %}

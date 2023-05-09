@@ -1,13 +1,15 @@
 import functools
+import os
+
 import pandas as pd
 
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, flash, g, redirect, render_template, request, url_for, Response
 )
 
 from flaskr.db import get_db
 
-bp = Blueprint('codes', __name__, url_prefix='/codes')
+bp = Blueprint('product', __name__, url_prefix='/product')
 
 
 def login_required(view):
@@ -21,9 +23,21 @@ def login_required(view):
     return wrapped_view
 
 
-@bp.route('/codes_import', methods=['GET', 'POST'])
+@bp.route('/view', methods=['GET'])
 @login_required
-def codes_import():
+def view():
+    if request.method == 'GET':
+        db = get_db()
+        products = db.execute(
+            'SELECT * FROM product'
+        ).fetchall()
+        return render_template('product/view.html', products=products)
+    return redirect(url_for('index'))
+
+
+@bp.route('/product_import', methods=['GET', 'POST'])
+@login_required
+def product_import():
     if request.method == 'POST':
         file = request.files['file']
         df = pd.read_csv(file)
@@ -44,9 +58,18 @@ def codes_import():
     return redirect(url_for('index'))
 
 
-@bp.route('/codes_export', methods=['GET'])
+@bp.route('/product_export', methods=['GET'])
 @login_required
-def codes_export():
+def product_export():
     if request.method == 'GET':
-        flash("hejjj export")
+        filename = "registar_sifara.csv"
+        db = get_db()
+        query = 'SELECT * FROM product'
+        df = pd.read_sql_query(query, db).drop(['id'], axis=1)
+        df.to_csv(filename, index=False)
+        return Response(
+            open(filename, 'r'),
+            mimetype='text/csv',
+            headers={'Content-Disposition': f'attachment;filename={filename}'}
+        )
     return redirect(url_for('index'))

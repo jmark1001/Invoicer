@@ -27,10 +27,10 @@ def create_app(test_config=None):
     from . import db
     db.init_app(app)
 
-    from . import auth, invoice, codes
+    from . import auth, invoice, product
     app.register_blueprint(auth.bp)
     app.register_blueprint(invoice.bp)
-    app.register_blueprint(codes.bp)
+    app.register_blueprint(product.bp)
 
     app.add_url_rule('/', endpoint='index')
 
